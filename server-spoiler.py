@@ -33,7 +33,7 @@ ASCII_NO_COLOR = '\033[0m'
 class MyTCPHandler(server.BaseRequestHandler):
 
     def handle(self):
-        logging.info('Connected with ' + str(self.client_address))
+        logging.info(f'Connected with {str(self.client_address)}')
 
         # Random spoiler select
         chosen = random.choice(movies)
@@ -47,11 +47,9 @@ if __name__ == "__main__":
     logging.basicConfig(filename='server.log', format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG)
     logging.getLogger().addHandler(logging.StreamHandler())
 
-    fileSpoilers = open(FILE_SPOILER, "r")
-    spoilers = json.load(fileSpoilers)
-    movies = spoilers['movies']
-    fileSpoilers.close()
-
+    with open(FILE_SPOILER, "r") as fileSpoilers:
+        spoilers = json.load(fileSpoilers)
+        movies = spoilers['movies']
     server = server.TCPServer((HOST, PORT), MyTCPHandler)
     logging.info("Ready for ACTION")
     server.serve_forever()
